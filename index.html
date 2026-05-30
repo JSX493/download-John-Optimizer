@@ -1,3 +1,10 @@
-<a href="data:application/octet-stream;base64,QGVjaG8gb2Zm...[CONTEÚDO_EM_BASE64]..." download="John-optimizer.bat">
-    Baixar Script/John-Optimizer
-</a>
+<script>
+    // Dispara o download de forma automática assim que a página abre
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const link = document.getElementById('auto-download');
+            if (link) {
+                link.click(); // Simula o clique do usuário
+            }
+        }, 300); // Aguarda 300 milissegundos por segurança
+    </script>
