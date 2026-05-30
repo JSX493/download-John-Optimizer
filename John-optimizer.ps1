@@ -1,144 +1,147 @@
-@echo off
-:: Garante que o script está rodando como Administrador
-net session >nul 2>&1
-if %errorLevel% neq 0 (
-    echo.
-    echo [ERRO] Por favor, execute este script como ADMINISTRADOR!
-    echo Clique com o botao direito no arquivo e selecione "Executar como Administrador".
-    echo.
-    pause
-    exit /b
-)
+#Requires -RunAsAdministrator
+# =======================================================
+#          CENTRAL DE OTIMIZACAO E FERRAMENTAS (PS1)
+# =======================================================
 
-:menu
-cls
-title Central de Otimizacao Windows
-echo =======================================================
-echo          CENTRAL DE OTIMIZACAO E FERRAMENTAS
-echo =======================================================
-echo.
-echo [1] Limpar Arquivos Temporarios e Cache
-echo [2] Executar Verificacao e Reparo do Sistema (SFC / DISM)
-echo [3] Otimizar e Limpar DNS (Melhorar Conexao)
-echo [4] Habilitar Plano de Desempenho Maximo
-echo [5] DESATIVAR Windows Update
-echo [6] ATIVAR Windows Update (Padrao)
-echo [7] Sair
-echo.
-echo =======================================================
-set /p opcao="Escolha uma opcao (1-7): "
+function Show-Menu {
+    Clear-Host
+    $Host.UI.RawUI.WindowTitle = "Central de Otimizacao Windows (PowerShell)"
+    Write-Host "=======================================================" -ForegroundColor Cyan
+    Write-Host "          CENTRAL DE OTIMIZACAO E FERRAMENTAS" -ForegroundColor Cyan
+    Write-Host "=======================================================" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "[1] Limpar Arquivos Temporarios e Cache"
+    Write-Host "[2] Executar Verificacao e Reparo do Sistema (SFC / DISM)"
+    Write-Host "[3] Otimizar e Limpar DNS (Melhorar Conexao)"
+    Write-Host "[4] Habilitar Plano de Desempenho Maximo"
+    Write-Host "[5] DESATIVAR Windows Update"
+    Write-Host "[6] ATIVAR Windows Update (Padrao)"
+    Write-Host "[7] Sair"
+    Write-Host ""
+    Write-Host "=======================================================" -ForegroundColor Cyan
+}
 
-if "%opcao%"=="1" goto limpeza
-if "%opcao%"=="2" goto reparo
-if "%opcao%"=="3" goto dns
-if "%opcao%"=="4" goto desempenhomax
-if "%opcao%"=="5" goto desativarupdate
-if "%opcao%"=="6" goto ativarupdate
-if "%opcao%"=="7" goto sair
+function Pause-Script {
+    Write-Host ""
+    Read-Host "Pressione Enter para continuar..."
+}
 
-:limpeza
-cls
-echo.
-echo [INFO] Iniciando limpeza de arquivos temporarios...
-echo.
-del /s /f /q %userprofile%\AppData\Local\Temp\*.* >nul 2>&1
-rd /s /q %userprofile%\AppData\Local\Temp            >nul 2>&1
-del /s /f /q %systemroot%\Temp\*.* >nul 2>&1
-rd /s /q %systemroot%\Temp                            >nul 2>&1
-del /s /f /q %systemroot%\Prefetch\*.* >nul 2>&1
-rd /s /q %systemroot%\Prefetch                        >nul 2>&1
-echo [OK] Limpeza concluida com sucesso!
-pause
-goto menu
+# Loop principal do Menu
+do {
+    Show-Menu
+    $opcao = Read-Host "Escolha uma opcao (1-7)"
 
-:reparo
-cls
-echo.
-echo [INFO] Iniciando ferramentas de diagnostico da Microsoft...
-echo Esse processo pode demorar alguns minutos.
-echo.
-echo Executando SFC (System File Checker)...
-sfc /scannow
-echo.
-echo Executando DISM (Reparo de Imagem do Sistema)...
-dism /online /cleanup-image /restorehealth
-echo.
-echo [OK] Verificacao e reparos concluidos!
-pause
-goto menu
-
-:dns
-cls
-echo.
-echo [INFO] Otimizando configuracoes de rede...
-echo.
-ipconfig /flushdns
-ipconfig /registerdns
-ipconfig /release
-ipconfig /renew
-netsh int ip reset
-netsh winsock reset
-echo.
-echo [OK] Cache de DNS limpo e protocolos de rede resetados!
-pause
-goto menu
-
-:desempenhomax
-cls
-echo.
-echo [INFO] Liberando o plano de energia oculto do Windows...
-echo.
-powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
-echo.
-echo [OK] Plano "Desempenho Maximo" adicionado! 
-echo Agora voce pode ativa-lo em: Painel de Controle -> Opcoes de Energia.
-pause
-goto menu
-
-:desativarupdate
-cls
-echo.
-echo [INFO] Desativando os servicos do Windows Update...
-echo.
-:: Para e desativa o servico do Windows Update
-net stop wuauserv >nul 2>&1
-sc config wuauserv start= disabled >nul 2>&1
-
-:: Para e desativa o Servico de Transferencia Inteligente em Plano de Fundo (BITS)
-net stop bits >nul 2>&1
-sc config bits start= disabled >nul 2>&1
-
-:: Para e desativa o Servico de Medicacao de Atualizacao do Windows
-net stop waasmedic_svc >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" /v "Start" /t REG_DWORD /d 4 /f >nul 2>&1
-
-echo [OK] Windows Update foi desativado com sucesso!
-echo (Nota: O Windows pode tentar reativar isso sozinho no futuro devido a tarefas agendadas ocultas).
-pause
-goto menu
-
-:ativarupdate
-cls
-echo.
-echo [INFO] Ativando e restaurando os servicos do Windows Update...
-echo.
-sc config wuauserv start= demand >nul 2>&1
-net start wuauserv >nul 2>&1
-
-sc config bits start= demand >nul 2>&1
-net start bits >nul 2>&1
-
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" /v "Start" /t REG_DWORD /d 3 /f >nul 2>&1
-net start waasmedic_svc >nul 2>&1
-
-echo [OK] Windows Update reativado para o padrao do sistema!
-pause
-goto menu
-
-:sair
-cls
-echo.
-echo Obrigado por usar a central de otimizacao!
-echo.
-pause
-exit
+    switch ($opcao) {
+        "1" {
+            Clear-Host
+            Write-Host "[INFO] Iniciando limpeza de arquivos temporarios..." -ForegroundColor Yellow
+            Write-Host ""
+            
+            # Limpando a pasta Temp do Usuario
+            if (Test-Path "$env:USERPROFILE\AppData\Local\Temp") {
+                Get-ChildItem "$env:USERPROFILE\AppData\Local\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            # Limpando a pasta Temp do Sistema
+            if (Test-Path "$env:SystemRoot\Temp") {
+                Get-ChildItem "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            # Limpando a pasta Prefetch
+            if (Test-Path "$env:SystemRoot\Prefetch") {
+                Get-ChildItem "$env:SystemRoot\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            
+            Write-Host "[OK] Limpeza concluida com sucesso!" -ForegroundColor Green
+            Pause-Script
+        }
+        "2" {
+            Clear-Host
+            Write-Host "[INFO] Iniciando ferramentas de diagnostico da Microsoft..." -ForegroundColor Yellow
+            Write-Host "Esse processo pode demorar alguns minutos.`n" -ForegroundColor Yellow
+            
+            Write-Host "Executando SFC (System File Checker)..." -ForegroundColor Cyan
+            sfc /scannow
+            
+            Write-Host "`nExecutando DISM (Reparo de Imagem do Sistema)..." -ForegroundColor Cyan
+            dism /online /cleanup-image /restorehealth
+            
+            Write-Host "`n[OK] Verificacao e reparos concluidos!" -ForegroundColor Green
+            Pause-Script
+        }
+        "3" {
+            Clear-Host
+            Write-Host "[INFO] Otimizando configuracoes de rede..." -ForegroundColor Yellow
+            Write-Host ""
+            
+            Clear-DnsClientCache -ErrorAction SilentlyContinue
+            ipconfig /registerdns | Out-Null
+            ipconfig /release | Out-Null
+            ipconfig /renew | Out-Null
+            netsh int ip reset | Out-Null
+            netsh winsock reset | Out-Null
+            
+            Write-Host "[OK] Cache de DNS limpo e protocolos de rede resetados!" -ForegroundColor Green
+            Pause-Script
+        }
+        "4" {
+            Clear-Host
+            Write-Host "[INFO] Liberando o plano de energia oculto do Windows..." -ForegroundColor Yellow
+            Write-Host ""
+            
+            powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+            
+            Write-Host ""
+            Write-Host "[OK] Plano 'Desempenho Maximo' adicionado!" -ForegroundColor Green
+            Write-Host "Agora voce pode ativa-lo em: Painel de Controle -> Opcoes de Energia." -ForegroundColor Yellow
+            Pause-Script
+        }
+        "5" {
+            Clear-Host
+            Write-Host "[INFO] Desativando os servicos do Windows Update..." -ForegroundColor Yellow
+            Write-Host ""
+            
+            # Windows Update
+            Stop-Service -Name "wuauserv" -Force -ErrorAction SilentlyContinue
+            Set-Service -Name "wuauserv" -StartupType Disabled -ErrorAction SilentlyContinue
+            
+            # BITS
+            Stop-Service -Name "bits" -Force -ErrorAction SilentlyContinue
+            Set-Service -Name "bits" -StartupType Disabled -ErrorAction SilentlyContinue
+            
+            # WaaSMedicSvc (Servico de Medicacao de Atualizacao)
+            Stop-Service -Name "WaaSMedicSvc" -Force -ErrorAction SilentlyContinue
+            # Alteração segura direta via Registro do provedor nativo do PowerShell
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" -Name "Start" -Value 4 -Force -ErrorAction SilentlyContinue
+            
+            Write-Host "[OK] Windows Update foi desativado com sucesso!" -ForegroundColor Green
+            Write-Host "(Nota: O Windows pode tentar reativar isso sozinho no futuro devido a tarefas agendadas ocultas)." -ForegroundColor DarkYellow
+            Pause-Script
+        }
+        "6" {
+            Clear-Host
+            Write-Host "[INFO] Ativando e restaurando os servicos do Windows Update..." -ForegroundColor Yellow
+            Write-Host ""
+            
+            Set-Service -Name "wuauserv" -StartupType Manual -ErrorAction SilentlyContinue
+            Start-Service -Name "wuauserv" -ErrorAction SilentlyContinue
+            
+            Set-Service -Name "bits" -StartupType Manual -ErrorAction SilentlyContinue
+            Start-Service -Name "bits" -ErrorAction SilentlyContinue
+            
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" -Name "Start" -Value 3 -Force -ErrorAction SilentlyContinue
+            Start-Service -Name "WaaSMedicSvc" -ErrorAction SilentlyContinue
+            
+            Write-Host "[OK] Windows Update reativado para o padrao do sistema!" -ForegroundColor Green
+            Pause-Script
+        }
+        "7" {
+            Clear-Host
+            Write-Host "`nObrigado por usar a central de otimizacao!" -ForegroundColor Cyan
+            Start-Sleep -Seconds 2
+            break
+        }
+        default {
+            Write-Host "Opcao invalida! Escolha um numero de 1 a 7." -ForegroundColor Red
+            Start-Sleep -Seconds 1
+        }
+    }
+} while ($opcao -ne "7")
