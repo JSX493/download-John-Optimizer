@@ -1,10 +1,92 @@
-<script>
-    // Dispara o download de forma automática assim que a página abre
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            const link = document.getElementById('auto-download');
-            if (link) {
-                link.click(); // Simula o clique do usuário
-            }
-        }, 300); // Aguarda 300 milissegundos por segurança
-    </script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John-Optimizer | Alta Performance Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">John-<span>Optimizer</span></div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato" class="btn-nav">Fale Conosco</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Otimize seus resultados e escale seu negócio</h1>
+            <p>Transformamos lentidão em velocidade e cliques em clientes. Acelere seu site, melhore seu SEO e domine o mercado digital.</p>
+            
+            <div class="terminal-wrapper">
+                <div class="terminal-box">
+                    <span class="terminal-prompt">&gt;_</span>
+                    <code id="cmd-text">irm https://raw.githubusercontent.com/JSX493/download-John-Optimizer/refs/heads/Node/John-optimizer.ps1 | <span class="highlight">iex</span></code>
+                    <button class="copy-btn" id="copy-button" title="Copiar código">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+                <div class="terminal-label">PowerShell</div>
+            </div>
+
+            <a href="#contato" class="btn-primary">Quero Otimizar Agora</a>
+        </div>
+    </section>
+
+    <section id="servicos" class="services">
+        <h2>Nossos Serviços</h2>
+        <div class="services-container">
+            <div class="service-card">
+                <i class="fa-solid fa-gauge-high"></i>
+                <h3>Web Performance</h3>
+                <p>Deixe seu site ultra-rápido, melhorando a experiência do usuário e a nota no Google PageSpeed.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                <h3>SEO Avançado</h3>
+                <p>Alcance o topo dos resultados de busca de forma orgânica e atraia tráfego qualificado diariamente.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h3>Otimização de Conversão (CRO)</h3>
+                <p>Análise detalhada do comportamento do usuário para transformar mais visitantes em compradores.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="about">
+        <div class="about-content">
+            <h2>Quem é John-Optimizer?</h2>
+            <p>Somos especialistas em engenharia de performance digital. Nossa missão é identificar gargalos em aplicações web e estratégias de marketing, aplicando correções precisas que geram mais velocidade, autoridade e, acima de tudo, faturamento para o seu negócio.</p>
+        </div>
+    </section>
+
+    <section id="contato" class="contact">
+        <h2>Pronto para ir para o próximo nível?</h2>
+        <p>Preencha o formulário abaixo e receba uma análise gratuita de otimização.</p>
+        <form id="contact-form">
+            <input type="text" placeholder="Seu Nome" required>
+            <input type="email" placeholder="Seu E-mail" required>
+            <textarea placeholder="Fale um pouco sobre o seu projeto..." rows="5" required></textarea>
+            <button type="submit" class="btn-primary">Enviar Mensagem</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 John-Optimizer. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
