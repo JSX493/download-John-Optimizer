@@ -1,6 +1,6 @@
 #Requires -RunAsAdministrator
 # ==============================================================================
-#          CENTRAL DE OTIMIZAÇÃO AVANÇADA - 50 OPÇÕES EXCLUSIVAS
+#                           John-Optimizer
 # ==============================================================================
 
 function Pause-Script {
